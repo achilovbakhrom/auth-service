@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Roles} from "../enums/Roles";
 
 @Entity({ name: "users" })
 export class UserEntity {
@@ -12,7 +13,28 @@ export class UserEntity {
     @Column()
     public password: string
 
+    @Column({ enum: Roles, default: Roles.USER })
+    public role: Roles
 
+    @Column()
+    public otp?: string
 
+    @Column()
+    public twoFactorAuthEnabled?: boolean
 
+    @Column()
+    public twoFactorAuthToken?: string
+
+    @Column()
+    public kycVerified?: boolean
+
+    @Column({ nullable: false, default: false })
+    public emailVerified: boolean
+
+    @CreateDateColumn()
+    readonly createdAt: Date
+
+    @UpdateDateColumn()
+    readonly updatedAt: Date
+    
 }
