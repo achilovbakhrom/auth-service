@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import {createConnection} from "typeorm";
 import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -11,15 +12,18 @@ export class AppLauncher {
     private readonly server: InversifyExpressServer;
 
     constructor() {
+        // @ts-ignore
         this.server = new InversifyExpressServer(container);
         dotenv.config({ path: ".env" });
         this.registerMiddlewares();
         this.registerRoutes();
+        this.registerDbConnection();
     }
 
     private registerMiddlewares = () => {
         this.server.setConfig((app) => {
             logger.info("applying middlewares")
+
             app.use( '/api-docs/swagger' , express.static( 'swagger' ) );
             app.use( '/api-docs/swagger/assets' , express.static( 'node_modules/swagger-ui-dist' ) );
 
@@ -45,6 +49,14 @@ export class AppLauncher {
 
     private registerRoutes = () => {
 
+    }
+
+    private registerDbConnection = () => {
+        this.server.setConfig((app) => {
+            logger.info("DB Connection")
+            // createConnection(getConnectionOptions())
+            createConnection();
+        })
     }
 
     launch = () => {
